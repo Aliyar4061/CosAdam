@@ -1,0 +1,2 @@
+# CosAdam-Cosine-Similarity-Guided-Adaptive-Moment-Estimation-for-Deep-Learning-Optimization
+CosAdam improves Adam by monitoring gradient directional consistency via cosine similarity. Its Directional Consistency Factor (DCF) adapts step sizes, boosting aligned updates &amp; suppressing noise. Achieves SOTA on CIFAR-10 (89.09%), SST-2 (82.91%), and noisy MNIST (96.64%). Efficient (O(N)) drop-in replacement.
