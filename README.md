@@ -171,5 +171,5 @@ class CosAdam(optim.Optimizer):
 | Comb5 | 0.0005 | 0.8 | 0.999 | 0.0   | 0.9  | 0.6 | 98.90        | 98.90         | 98.88      | 98.89        |
 
 
-![Example Image](2.jpg)
-![Example Image](noisymnist.jpg)
+![Example Image](2.png)
+![Example Image](noisymnist.png)
