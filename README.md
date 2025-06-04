@@ -1,3 +1,27 @@
+# 🧠✨ **Neurocomputing** ✨🧠  
+A **neural networks** project with:  
+- 🚀 Fast training  
+- 🎨 Visualizations  
+- 📊 Performance metrics
+
+<!--# <span style="color:purple">🧠 **Neurocomputing** 🧠</span>  <span style="color:orange">**Key Features:**</span>  
+- <span style="color:blue">High-performance neural networks</span>  
+- <span style="color:green">Real-time visualization</span>  
+ -->
+
+
+![Metrics](https://img.shields.io/badge/Accuracy-99.13%25-brightgreen) 
+<!--![Neural Network Training](https://media.giphy.com/media/LMt9638dO8dftAjtco/giphy.gif) -->
+![Demo](https://media.giphy.com/media/3o7TKSjRrfIPjeiVyM/giphy.gif)
+
+
+
+
+
+
+<!--[Python](https://img.shields.io/badge/Python-3.8+-blue?logo=python)  
+![License](https://img.shields.io/badge/License-MIT-green) -->  
+
 # CosAdam: Cosine Similarity–Guided Adaptive Moment Estimation for Deep Learning Optimization
 
 # Abstract
