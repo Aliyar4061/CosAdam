@@ -169,3 +169,7 @@ class CosAdam(optim.Optimizer):
 | Comb3 | 0.01   | 0.9 | 0.99  | 0.01  | 0.8  | 0.3 | 98.78        | 98.77         | 98.76      | 98.76        |
 | Comb4 | 0.001  | 0.9 | 0.99  | 0.005 | 0.85 | 0.5 | 99.05        | 99.04         | 99.04      | 99.04        |
 | Comb5 | 0.0005 | 0.8 | 0.999 | 0.0   | 0.9  | 0.6 | 98.90        | 98.90         | 98.88      | 98.89        |
+
+
+![Example Image](Pseudocode.jpg)
+![Example Image](Pseudocode.jpg)
