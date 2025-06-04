@@ -12,9 +12,14 @@ Optimization in deep neural networks remains a critical challenge, directly infl
 ## Algorithm Pseudocode
 Here’s the visual representation of the algorithm:
 
-![CosAdam Pseudocode](https://github.com/your-username/your-repo/blob/main/Pseudocode.jpg?raw=true)
+![Example Image](Pseudocode.jpg)
 
-## Code
+Figure 1: Pseudocode of CosAdam optimizer
+
+
+
+
+## Code of CosAdam Optimizer
 ```python
 # ---------------------------
 # CosAdam Optimizer (Improved Implementation)
