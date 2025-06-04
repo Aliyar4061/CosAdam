@@ -7,14 +7,13 @@ Optimization in deep neural networks remains a critical challenge, directly infl
 ## CosAdam Algorithm
 
 
-# My Project
+
 
 ## Algorithm Pseudocode
 Here’s the visual representation of the algorithm:
 
 ![Example Image](Pseudocode.jpg)
 
-Figure 1: Pseudocode of CosAdam optimizer
 
 
 
@@ -86,61 +85,8 @@ class CosAdam(optim.Optimizer):
                 state['prev_grad'].copy_(grad)
 
         return loss
-
 ```
 
-Algorithm: CosAdam Optimizer
-
-Input:
-  α: Learning rate
-  β₁, β₂: Momentum parameters
-  α_cos: Cosine smoothing factor
-  c: Scaling coefficient
-  ε: Numerical stability term (default: 1e-8)
-  λ: Weight decay coefficient (optional)
-  
-Initialize:
-  θ₀: Initial parameters
-  m₀ = 0, v₀ = 0, s₀ = 0 (1st, 2nd moments and cosine similarity)
-  g_prev = 0 (previous gradient)
-
-for t = 1 to T do
-  1. Compute gradient: gₜ = ∇θ fₜ(θₜ₋₁)
-  
-  2. if t > 1 then
-     a. Compute cosine similarity:
-        cosθₜ = (gₜ · g_prev) / (‖gₜ‖₂ ‖g_prev‖₂)
-     b. Update smoothed similarity:
-        sₜ = α_cos · sₜ₋₁ + (1 - α_cos) · cosθₜ
-     end if
-  
-  3. Update moments:
-     a. First moment: mₜ = β₁ · mₜ₋₁ + (1 - β₁) · gₜ
-     b. Second moment: vₜ = β₂ · vₜ₋₁ + (1 - β₂) · gₜ²
-  
-  4. Compute bias-corrected moments:
-     a. m̂ₜ = mₜ / (1 - β₁ᵗ)
-     b. v̂ₜ = vₜ / (1 - β₂ᵗ)
-  
-  5. Compute parameter update:
-     Δθₜ = -α · m̂ₜ / (√v̂ₜ + ε)
-  
-  6. if t > 1 then
-     a. Apply cosine scaling:
-        Δθₜ ← Δθₜ · (1 + c · sₜ)
-     end if
-  
-  7. if λ > 0 then
-     a. Apply weight decay:
-        θₜ₋₁ ← θₜ₋₁ - λ · α · θₜ₋₁
-     end if
-  
-  8. Update parameters:
-     θₜ = θₜ₋₁ + Δθₜ
-  
-  9. Store gradient:
-     g_prev = gₜ
-end for
 
 
 
