@@ -1,4 +1,4 @@
-# 🧠✨ **Neurocomputing** ✨🧠  
+<!--# 🧠✨ **Neurocomputing** ✨🧠  -->
 A **neural networks** project with:  
 - 🚀 Fast training  
 - 🎨 Visualizations  
@@ -11,8 +11,8 @@ A **neural networks** project with:
 
 
 ![Metrics](https://img.shields.io/badge/Accuracy-99.13%25-brightgreen) 
-<!--![Neural Network Training](https://media.giphy.com/media/LMt9638dO8dftAjtco/giphy.gif) -->
-![Demo](https://media.giphy.com/media/3o7TKSjRrfIPjeiVyM/giphy.gif)
+<!--![Neural Network Training](https://media.giphy.com/media/LMt9638dO8dftAjtco/giphy.gif) 
+![Demo](https://media.giphy.com/media/3o7TKSjRrfIPjeiVyM/giphy.gif)-->
 
 
 
@@ -113,98 +113,141 @@ class CosAdam(optim.Optimizer):
         return loss
 ```
 
-\subsection{Why CosAdam Outperforms Other Optimizers?}
+### Why CosAdam Outperforms Other Optimizers?
 
 In the domain of deep learning optimization, the CosAdam optimizer demonstrates superior performance compared to traditional methods such as stochastic gradient descent (SGD) with momentum, Adam, AdamW, Nadam, and RMSprop. This advantage stems from its novel incorporation of cosine similarity between consecutive gradients, enabling dynamic modulation of update steps based on gradient direction consistency. Below, we outline the key reasons for CosAdam’s enhanced performance, supported by its algorithmic design and empirical evidence.
 
 The CosAdam optimizer introduces a novel mechanism for modulating parameter updates based on the cosine similarity of successive gradients. By incorporating directional information directly into the adaptive update rule, CosAdam achieves faster convergence, greater stability in non-convex landscapes, and improved generalization compared to standard optimizers such as Adam, RMSProp, and SGD variants.
 
-CosAdam augments the Adam optimizer by introducing a cosine similarity term, defined as $\cos\theta_t = \frac{g_t \cdot g_{t-1}}{\|g_t\|_2 \|g_{t-1}\|_2}$, where $g_t$ is the current gradient and $g_{t-1}$ is the previous gradient. This term is smoothed using an exponential moving average, $s_t = \alpha_{\text{cos}} \cdot s_{t-1} + (1 - \alpha_{\text{cos}}) \cdot \cos\theta_t$, and scales the update via a multiplicative factor $(1 + c \cdot s_t)$ in the update rule: $\theta_t = \theta_{t-1} - \alpha \frac{\hat{m}_t}{\sqrt{\hat{v}_t} + \epsilon} \cdot (1 + c \cdot s_t)$, where $\hat{m}_t = \frac{m_t}{1 - \beta_1^t}$ and $\hat{v}_t = \frac{v_t}{1 - \beta_2^t}$. This directional awareness allows CosAdam to adaptively adjust step sizes based on the local geometry of the loss landscape, offering several key advantages.
+CosAdam augments the Adam optimizer by introducing a cosine similarity term, defined as:
+
+$$
+\cos\theta_t = \frac{g_t \cdot g_{t-1}}{\|g_t\|_2 \|g_{t-1}\|_2}
+$$
+
+where $g_t$ is the current gradient and $g_{t-1}$ is the previous gradient. This term is smoothed using an exponential moving average:
+
+$$
+s_t = \alpha_{\text{cos}} \cdot s_{t-1} + (1 - \alpha_{\text{cos}}) \cdot \cos\theta_t
+$$
+
+and scales the update via a multiplicative factor $(1 + c \cdot s_t)$ in the update rule:
+
+$$
+\theta_t = \theta_{t-1} - \alpha \frac{\hat{m}_t}{\sqrt{\hat{v}_t} + \epsilon} \cdot (1 + c \cdot s_t)
+$$
+
+where:
+
+$$
+\hat{m}_t = \frac{m_t}{1 - \beta_1^t}, \quad \hat{v}_t = \frac{v_t}{1 - \beta_2^t}
+$$
+
+This directional awareness allows CosAdam to adaptively adjust step sizes based on the local geometry of the loss landscape, offering several key advantages.
+
+---
+
+### Key Reasons for Performance Gain
+
+1. **Directional awareness via cosine similarity**
+
+Traditional adaptive methods (e.g., Adam) rely solely on the magnitude of past gradients. CosAdam augments this by computing the cosine similarity between the current and previous gradient:
+
+$$
+\cos\theta_t = \frac{g_t \cdot g_{t-1}}{\|g_t\|_2 \|g_{t-1}\|_2}
+$$
+
+A positive value of $\cos\theta_t$ indicates that successive gradients point in a similar direction. Conversely, a near-zero or negative value signals oscillation or curvature.
+
+Smoothed via EMA:
+
+$$
+s_t = \alpha_{\text{cos}} s_{t-1} + (1 - \alpha_{\text{cos}})\cos\theta_t
+$$
+
+This directional signal allows CosAdam to amplify updates when gradients align and dampen them when they oscillate.
+
+2. **Adaptive step scaling in flat vs. oscillatory regions**
+
+The core update rule:
+
+$$
+\Delta \theta_t = -\alpha \frac{\hat{m}_t}{\sqrt{\hat{v}_t} + \epsilon}(1 + c s_t)
+$$
+
+where:
+
+$$
+\hat{m}_t = \frac{m_t}{1 - \beta_1^t}, \quad \hat{v}_t = \frac{v_t}{1 - \beta_2^t}
+$$
+
+Effects:
+
+- **$s_t > 0$**: Accelerated convergence in aligned-gradient regions.
+- **$s_t < 0$**: Dampens updates to stabilize optimization.
+- **$s_t \approx 0$**: Behaves like Adam.
+
+3. **Adaptive scaling based on gradient direction consistency**
+
+- When $s_t > 0$, $(1 + c s_t) > 1$ → faster convergence.
+- When $s_t < 0$, $(1 + c s_t) < 1$ → prevents instability.
+- When $s_t \approx 0$, behaves like Adam → neutral effect.
+
+This directional adaptability gives CosAdam an edge over AdamW and Nadam.
+
+4. **Enhanced stability through smoothed cosine similarity**
+
+Smoothed $s_t$ reduces noise sensitivity, making CosAdam robust in high-dimensional and noisy loss landscapes—unlike AdamW or Nadam.
+
+5. **Retention of Adam’s core strengths**
+
+CosAdam keeps Adam’s adaptive learning rate and sparsity robustness, but enhances it with cosine-driven directional feedback.
+
+6. **Superior handling of non-stationary objectives**
+
+CosAdam can adapt to shifts in gradient direction faster than AdamW or Nadam, making it more effective for evolving tasks.
+
+7. **Improved generalization**
+
+By favoring consistent directions and discouraging oscillation, CosAdam targets flatter minima—often correlated with better generalization. Empirical results show higher test accuracy and better generalization across CIFAR-10, MNIST, SST-2, and noisy MNIST.
+
+See Tables: `cifar10_results_cosadam` – `noisy_mnist_results_cosadam`.
+
+8. **Low computational overhead**
+
+Extra computations:
+
+- Dot product and norms: $\mathcal{O}(n)$
+- Still negligible vs. forward/backward passes
+- Efficiently vectorizable in PyTorch/NumPy
+
+Thus, it retains Adam’s asymptotic cost while improving intelligence.
+
+9. **Robustness to noisy data**
+
+On noisy MNIST, CosAdam achieved 96.64% accuracy—outperforming all baselines in accuracy, precision, recall, and F1-score.
+
+See: `noisy_mnist_results_cosadam`.
+
+10. **Tunable cosine parameters**
+
+Hyperparameters $\alpha$ and $c$ control directional modulation. Table `CosAdam_mnist_hyperparams` shows that optimal settings can push test accuracy on MNIST up to 99.26%.
+
+11. **Explanation of CosAdam’s overhead**
+
+Key addition:
+
+- One dot product and two norms per step: $\mathcal{O}(N)$
+- Cheap and vectorizable
+- Same asymptotic complexity as Adam/Nadam: $\mathcal{O}(N)$
+
+Especially useful for:
+
+- Non-convex losses
+- Fluctuating gradients
+- Direction-sensitive convergence
 
 
-
-
-
- In what follows, we elaborate on the key reasons for this performance gain.
-
-
-\begin{enumerate}
-
-\item{\bf Directional awareness via cosine similarity}:
-
-Traditional adaptive methods (e.g., Adam) rely solely on the magnitude of past gradients (first and second moments) to scale each coordinate’s learning rate. CosAdam augments this by computing the cosine similarity between the current gradient \(g_t\) and the previous gradient \(g_{t-1}\):
-\begin{equation}
-\cos\theta_t \;=\; \frac{g_t \cdot g_{t-1}}{\|g_t\|_2 \,\|g_{t-1}\|_2}\,.
-\end{equation}
-A positive value of \(\cos\theta_t\) indicates that successive gradients point in a similar direction, suggesting that the optimizer is traversing a relatively smooth or consistently sloped region of the loss surface. Conversely, a negative or near‐zero cosine similarity signals oscillation or abrupt changes in curvature. By smoothing this quantity via an exponential moving average
-\begin{equation}
-s_t \;=\; \alpha_{\text{cos}}\,s_{t-1} \;+\;(1 - \alpha_{\text{cos}})\,\cos\theta_t,
-\end{equation}
-CosAdam develops an explicit sense of \emph{directional agreement}. This directional awareness allows CosAdam to amplify updates when gradients are aligned and  attenuate them when gradients oscillate, thereby reducing unnecessary parameter noise in high‐curvature or saddle‐point regions.
-
-\item{\bf  Adaptive step scaling in flat versus oscillatory regions}:
-
-CosAdam’s core update rule can be written as:
-\begin{equation}
-\Delta \theta_t \;=\; -\,\alpha\,\frac{\widehat{m}_t}{\sqrt{\widehat{v}_t} + \epsilon}
-\;\times\;\bigl(1 + c \,s_t \bigr)\,,
-\end{equation}
-where
-\[
-\widehat{m}_t \;=\; \frac{m_t}{1 - \beta_1^t},
-\qquad
-\widehat{v}_t \;=\; \frac{v_t}{1 - \beta_2^t},
-\]
-and \(s_t\) is the smoothed cosine similarity. The multiplicative factor \(\bigl(1 + c\,s_t\bigr)\) yields:
-\begin{itemize}
-    \item \textbf{Positive scaling} (\(s_t > 0\)): In regions where gradients remain consistently aligned (e.g., shallow valleys or plateaus), \(1 + c\,s_t > 1\). Thus, the effective step size is \emph{increased}, accelerating convergence along a stable descent direction and reducing the number of iterations needed to escape flat regions.
-    \item \textbf{Dampened scaling} (\(s_t < 0\)): When gradients oscillate or reverse direction (indicating sharp curvature or saddle points), \(1 + c\,s_t < 1\). Consequently, CosAdam \emph{reduces} the update magnitude, preventing large, erratic jumps that often cause divergence or slow down progress in non-convex settings.
-    \item \textbf{Neutral scaling} (\(s_t \approx 0\)): If gradients are nearly orthogonal from one iteration to the next, then \(1 + c\,s_t \approx 1\), and CosAdam effectively behaves like standard Adam in that region maintaining stability without introducing bias.
-\end{itemize}
-This implicit learning‐rate adaptation based on gradient alignment cannot be achieved by fixed schedules or heuristics alone, as CosAdam continuously and automatically adjusts itself to the local geometry of the loss surface.
-
-
-
-
-
-\item \textbf{Adaptive scaling based on gradient direction consistency:} When gradients align ($s_t > 0$), indicating a smooth or consistently sloped region, the factor $(1 + c \cdot s_t) > 1$ amplifies the update magnitude, accelerating convergence. Conversely, in oscillatory regions ($s_t < 0$), such as near sharp minima or saddle points, the factor $(1 + c \cdot s_t) < 1$ reduces the update magnitude, enhancing stability and preventing erratic jumps. If gradients are nearly orthogonal ($s_t \approx 0$), CosAdam behaves similarly to Adam, maintaining stability without bias. Unlike AdamW, which incorporates weight decay, or Nadam, which uses Nesterov momentum, CosAdam’s directional sensitivity enables it to adapt more effectively to the loss landscape.
-
-\item \textbf{Enhanced stability through smoothed cosine similarity:} The smoothed $s_t$ mitigates sensitivity to gradient noise, ensuring robustness in high-dimensional or noisy problems. This contrasts with AdamW and Nadam, which rely solely on moment estimates and may struggle in such scenarios, often leading to oscillations or slow convergence in complex loss landscapes.
-
-\item \textbf{Retention of Adam’s core strengths:} CosAdam preserves Adam’s adaptive learning rates, maintaining robustness to sparse gradients while introducing directional adaptability. This surpasses AdamW’s weight decay and Nadam’s momentum-based approaches, as CosAdam combines moment-based rescaling with cosine-driven feedback for greater flexibility.
-
-\item \textbf{Superior handling of non-stationary objectives:} CosAdam’s sensitivity to gradient direction shifts enables effective adaptation to non-stationary objectives, outperforming AdamW and Nadam, which adjust more slowly due to their reliance on historical moments. This makes CosAdam particularly effective for dynamic or evolving loss functions.
-
-\item \textbf{Improved generalization:} By favoring consistent gradient directions and dampening oscillations, CosAdam encourages smoother parameter trajectories, potentially targeting flatter minima that correlate with better generalization. This implicit regularization offers advantages over AdamW’s explicit regularization and Nadam’s convergence speed, reducing the generalization gap on deep convolutional and transformer models. Empirical results demonstrate that CosAdam leads to higher test accuracy and better generalization across diverse datasets such as CIFAR-10, MNIST, SST-2, and noisy MNIST. Notably, CosAdam outperforms Adam, AdamW, RMSprop, SGD, and Nadam in terms of accuracy, precision, recall, and F1-score across all these benchmarks (see Tables \ref{tab:cifar10_results_cosadam}–\ref{tab:noisy_mnist_results_cosadam}).
-
-\item \textbf{Low computational overhead:} Despite requiring additional computations (one dot product and two norms per iteration), CosAdam’s overhead is $\mathcal{O}(n)$, where $n$ is the parameter dimension. This is negligible compared to the forward and backward passes of modern neural networks, ensuring scalability comparable to Adam while providing second-order-inspired directional intelligence.
-
-
-\item \textbf{Robustness to noisy data:} As evidenced in Table \ref{tab:noisy_mnist_results_cosadam}, CosAdam achieves superior performance on noisy datasets, indicating enhanced robustness compared to standard optimizers. For example, on the noisy MNIST dataset, CosAdam attained a test accuracy of 96.64\%, outperforming all baselines.
-
-
-\item \textbf{Tunable cosine parameters:}  CosAdam introduces new hyperparameters such as $\alpha$ and $c$, which govern the influence of the cosine similarity. These parameters can be adjusted to fine-tune the optimizer's behavior, as shown in Table \ref{tab:CosAdam_mnist_hyperparams}, where different combinations yield test accuracies up to 99.26\% on MNIST.
-
-
-
-
-\item \textbf{Explanation of CosAdam's overhead:}
-
-CosAdam introduces one key operation not present in other optimizers:
-
-\begin{itemize}
-    \item \textbf{Cosine similarity between current and previous gradients:} This adds an $\mathcal{O}(N)$ dot product and norm computation per parameter tensor.
-    \item However, this operation is cheap compared to the backward pass and matrix operations, and can be vectorized efficiently in PyTorch or NumPy.
-\end{itemize}
-
-
-CosAdam maintains the same asymptotic time and space complexity as Adam and Nadam ($\mathcal{O}(N)$), while offering potential improvements in convergence through cosine similarity-based dynamic step scaling. It’s a smart enhancement with minimal cost, especially useful for:
-
-\begin{itemize}
-    \item Highly non-convex losses
-    \item Fluctuating gradient directions
-    \item Tasks where directional consistency helps convergence
-\end{itemize}
 
 
 
