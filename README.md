@@ -47,7 +47,7 @@ Here’s the visual representation of the algorithm:
 ## Code of CosAdam Optimizer
 ```python
 # ---------------------------
-# CosAdam Optimizer (Improved Implementation)
+# CosAdam Optimizer ( Implementation)
 # ---------------------------
 class CosAdam(optim.Optimizer):
     """Implements CosAdam: Adam with cosine similarity-based step adjustment."""
